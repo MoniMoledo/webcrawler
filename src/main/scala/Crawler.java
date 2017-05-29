@@ -1,3 +1,4 @@
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.webhoseio.sdk.WebhoseIOClient;
 
@@ -44,7 +45,7 @@ public class Crawler {
 
         try (BufferedWriter bw = createWriter("webhose")) {
 
-            String api_key = "1e8f7935-bacd-4c4e-a055-f1e52f8bbadd";
+            String api_key = "";
             String filters = getQueryString();
 
             WebhoseIOClient webhoseClient = WebhoseIOClient.getInstance(api_key);
@@ -60,9 +61,13 @@ public class Crawler {
 
             while (moreResultsAvailable > 0) {
 
-                bw.write(result.getAsJsonObject().get("posts").getAsString());
+                JsonArray results = result.getAsJsonObject().get("posts").getAsJsonArray();
+                for (JsonElement post : results) {
+                    bw.write(post.toString());
+                }
                 result = webhoseClient.getNext();
                 moreResultsAvailable = result.getAsJsonObject().get("moreResultsAvailable").getAsInt();
+
             }
 
         }
