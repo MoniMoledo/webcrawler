@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="webhose_libs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/webhoseio-java-sdk-master/libs/gson-2.8.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/webhoseio-java-sdk-master/libs/httpclient-4.5.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/webhoseio-java-sdk-master/libs/httpcore-4.4.6.jar!/" />
+      <root url="file://$PROJECT_DIR$/webhoseio-java-sdk-master/libs" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/webhoseio-java-sdk-master/libs" recursive="false" />
+  </library>
+</component>
