@@ -39,7 +39,7 @@ public class Crawler {
 //        String febreAmarela = "\"febre amarela\"";
 //        String chikungunya = "\"chikungunya\"";
 //        String dengue = "\"dengue\"";
-         String escapedKeyword = "\"" + keyword + "\"";
+        String escapedKeyword = "\"" + keyword + "\"";
 
         String filters = "(" + escapedKeyword + ")" + AND + thread_country_filter + countryCode;
 
@@ -53,6 +53,16 @@ public class Crawler {
         return currentMilliseconds - millisecondsAgo;
     }
 
+    private static int getHttpResponseCode(String exceptionMessage) {
+
+        int length = "HTTP response code: ".length();
+        int startIndex = exceptionMessage.indexOf("HTTP response code: ") + length;
+
+        int httpResponseCode = Integer.parseInt(exceptionMessage.substring(startIndex, startIndex + 3));
+
+        return httpResponseCode;
+    }
+
     public static void main(String[] args) throws IOException, URISyntaxException {
 
         Config config = CmdLineAux.parseCmdLineArgs(args);
@@ -62,27 +72,48 @@ public class Crawler {
             String filters = getQueryString(config.getKeyword(), config.getCountry());
             long timestamp = calculateTimestamp(config.getDays());
 
-            WebhoseIOClient webhoseClient = WebhoseIOClient.getInstance(config.getApiKey());
-            // Create set of queries
-            Map<String, String> queries = new HashMap<String, String>();
+            try {
+                WebhoseIOClient webhoseClient = WebhoseIOClient.getInstance(config.getApiKey());
+                // Create set of queries
+                Map<String, String> queries = new HashMap<String, String>();
 
-            queries.put("q", filters);
-            queries.put("ts", String.valueOf(timestamp));
+                queries.put("q", filters);
+                queries.put("ts", String.valueOf(timestamp));
+                queries.put("sort", "shit");
 
-            // Fetch query result
-            JsonElement result = webhoseClient.query("filterWebContent", queries);
+                // Fetch query result
+                JsonElement result = webhoseClient.query("filterWebContent", queries);
 
-            int moreResultsAvailable = result.getAsJsonObject().get("moreResultsAvailable").getAsInt();
+                int moreResultsAvailable = result.getAsJsonObject().get("moreResultsAvailable").getAsInt();
 
-            while (moreResultsAvailable > 0) {
+                while (moreResultsAvailable > 0) {
 
-                JsonArray results = result.getAsJsonObject().get("posts").getAsJsonArray();
-                for (JsonElement post : results) {
-                    bw.write(post.toString());
+                    JsonArray results = result.getAsJsonObject().get("posts").getAsJsonArray();
+                    for (JsonElement post : results) {
+                        bw.write(post.toString());
+                    }
+                    result = webhoseClient.getNext();
+                    moreResultsAvailable = result.getAsJsonObject().get("moreResultsAvailable").getAsInt();
+
                 }
-                result = webhoseClient.getNext();
-                moreResultsAvailable = result.getAsJsonObject().get("moreResultsAvailable").getAsInt();
+            } catch (IOException ex) {
 
+                int httpResponseCode = getHttpResponseCode(ex.getMessage());
+
+                switch (httpResponseCode) {
+                    case 400:
+                        System.err.println("Wrong sort or order value");
+                        throw ex;
+                    case 429:
+                        System.err.println("Request or rate limit exceeded");
+                        //throw ex;
+                        break;
+                    case 500:
+                        System.err.println("Failed to execute query: API internal error - > sleep and try again");
+                        break;
+                    default:
+                        throw ex;
+                }
             }
         }
     }
