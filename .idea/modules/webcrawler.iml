@@ -22,7 +22,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="SBT: org.scala-lang:scala-library:2.12.2:jar" level="project" />
-    <orderEntry type="module" module-name="webhoseio-java-sdk" exported="" />
+    <orderEntry type="library" name="SBT: args4j:args4j:2.33:jar" level="project" />
     <orderEntry type="library" name="webhose_libs" level="project" />
+    <orderEntry type="module" module-name="webhoseio-java-sdk" />
   </component>
 </module>
