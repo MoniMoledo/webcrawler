@@ -1,8 +1,10 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.webhoseio.sdk.WebhoseIOClient;
+import sun.util.logging.PlatformLogger;
 import util.CmdLineAux;
 import util.Config;
+import util.FileLogger;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -11,9 +13,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPOutputStream;
 
 public class Crawler {
+
+    private static Logger logger = FileLogger.getLogger();
 
     public static BufferedWriter createWriter(String fileName) throws IOException {
 
@@ -55,12 +62,16 @@ public class Crawler {
 
     private static int getHttpResponseCode(String exceptionMessage) {
 
-        int length = "HTTP response code: ".length();
-        int startIndex = exceptionMessage.indexOf("HTTP response code: ") + length;
+        if(exceptionMessage.contains("HTTP response code: ")) {
+            int length = "HTTP response code: ".length();
+            int startIndex = exceptionMessage.indexOf("HTTP response code: ") + length;
 
-        int httpResponseCode = Integer.parseInt(exceptionMessage.substring(startIndex, startIndex + 3));
+            int httpResponseCode = Integer.parseInt(exceptionMessage.substring(startIndex, startIndex + 3));
 
-        return httpResponseCode;
+            return httpResponseCode;
+        }else{
+            return -1;
+        }
     }
 
     public static void main(String[] args) throws IOException, URISyntaxException {
@@ -72,6 +83,8 @@ public class Crawler {
             String filters = getQueryString(config.getKeyword(), config.getCountry());
             long timestamp = calculateTimestamp(config.getDays());
 
+            logger.info("Query string: " + filters);
+
             try {
                 WebhoseIOClient webhoseClient = WebhoseIOClient.getInstance(config.getApiKey());
                 // Create set of queries
@@ -79,12 +92,15 @@ public class Crawler {
 
                 queries.put("q", filters);
                 queries.put("ts", String.valueOf(timestamp));
-                queries.put("sort", "shit");
 
                 // Fetch query result
                 JsonElement result = webhoseClient.query("filterWebContent", queries);
 
                 int moreResultsAvailable = result.getAsJsonObject().get("moreResultsAvailable").getAsInt();
+                int requestsLeft = result.getAsJsonObject().get("requestsLeft").getAsInt();
+                int totalResults = result.getAsJsonObject().get("totalResults").getAsInt();
+
+                logger.info("Requests left: " + requestsLeft + " Total results: " + totalResults);
 
                 while (moreResultsAvailable > 0) {
 
@@ -102,16 +118,17 @@ public class Crawler {
 
                 switch (httpResponseCode) {
                     case 400:
-                        System.err.println("Wrong sort or order value");
-                        throw ex;
+                        logger.log(Level.SEVERE, "Wrong sort or order value");
+                        break;
                     case 429:
-                        System.err.println("Request or rate limit exceeded");
-                        //throw ex;
+                        logger.log(Level.SEVERE, "Request or rate limit exceeded");
                         break;
                     case 500:
-                        System.err.println("Failed to execute query: API internal error - > sleep and try again");
+                        logger.log(Level.SEVERE,"Failed to execute query: API internal error - > sleep and try again");
                         break;
                     default:
+                        Supplier<String> msg  = ()-> ex.getMessage();
+                        logger.log(Level.SEVERE, ex, msg);
                         throw ex;
                 }
             }
