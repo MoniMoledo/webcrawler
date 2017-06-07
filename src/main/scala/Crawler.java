@@ -1,7 +1,7 @@
+import asterix.FeedSocketAdapterClient;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.webhoseio.sdk.WebhoseIOClient;
-import sun.util.logging.PlatformLogger;
 import util.CmdLineAux;
 import util.Config;
 import util.FileLogger;
@@ -33,6 +33,26 @@ public class Crawler {
         BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(zip, "UTF-8"));
         return bw;
+    }
+
+    public static FeedSocketAdapterClient openSocket(Config config) throws Exception {
+        FeedSocketAdapterClient socketAdapterClient = null;
+        if (config.getPort() != 0 && config.getAdapterUrl() != null) {
+            if (!config.isFileOnly()) {
+                String adapterUrl = config.getAdapterUrl();
+                int port = config.getPort();
+                int batchSize = config.getBatchSize();
+                int waitMillSecPerRecord = config.getWaitMillSecPerRecord();
+                int maxCount = config.getMaxCount();
+
+                socketAdapterClient = new FeedSocketAdapterClient(adapterUrl, port,
+                        batchSize, waitMillSecPerRecord, maxCount);
+                socketAdapterClient.initialize();
+            }
+        } else {
+            throw new Exception("You should provide a port and an URL");
+        }
+        return socketAdapterClient;
     }
 
     private static String getQueryString(String keyword, String countryCode) {
@@ -74,7 +94,7 @@ public class Crawler {
         }
     }
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args) throws Exception {
 
         Config config = CmdLineAux.parseCmdLineArgs(args);
 
@@ -86,6 +106,7 @@ public class Crawler {
             logger.info("Query string: " + filters);
 
             try {
+                FeedSocketAdapterClient feedSocket = Crawler.openSocket(config);
                 WebhoseIOClient webhoseClient = WebhoseIOClient.getInstance(config.getApiKey());
                 // Create set of queries
                 Map<String, String> queries = new HashMap<String, String>();
@@ -106,6 +127,8 @@ public class Crawler {
 
                     JsonArray results = result.getAsJsonObject().get("posts").getAsJsonArray();
                     for (JsonElement post : results) {
+                        String adm = post.toString();
+                        feedSocket.ingest(adm);
                         bw.write(post.toString());
                     }
                     result = webhoseClient.getNext();
