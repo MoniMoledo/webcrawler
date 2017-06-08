@@ -2,27 +2,30 @@ drop dataverse webhose
 create dataverse webhose if not exists;
 use dataverse webhose
 
-create type typePost if not exists as open {
-    id: int64,
+create type typeEntity if not exists as open{
     name: string,
-    screen_name : string,
-    lang : string,
-    location: string,
-    create_at: date,
-    description: string,
-    followers_count: int32,
-    friends_count: int32,
-    statues_count: int64
+    sentiment: string
 }
 
-create type typePlace if not exists as open{
-    country : string,
-    country_code : string,
-    full_name : string,
-    id : string,
-    name : string,
-    place_type : string,
-    bounding_box : rectangle
+create type typeEntities if not exists as open{
+    persons: [typeEntity],
+    organizations": [typeEntity],
+    locations": [typeEntity]
+}
+
+create type typeActions if not exists as open{
+    likes: int64?,
+    comments": int64?,
+    shares": int64?
+}
+
+create type typeSocial if not exists as open{
+    facebook : typeActions,
+    gplus : typeActions,
+    pinterest : typeActions,
+    linkedin : typeActions,
+    stumbledupon : typeActions,
+    vk : typeActions
 }
 
 create type typeGeoTag if not exists as open {
@@ -34,22 +37,44 @@ create type typeGeoTag if not exists as open {
     cityName: string?
 }
 
-create type typeTweet if not exists as open{
-    create_at : datetime,
-    id: int64,
-    "text": string,
-    in_reply_to_status : int64,
-    in_reply_to_user : int64,
-    favorite_count : int64,
-    coordinate: point?,
-    retweet_count : int64,
-    lang : string,
-    is_retweet: boolean,
-    hashtags : {{ string }} ?,
-    user_mentions : {{ int64 }} ? ,
-    user : typeUser,
-    place : typePlace?,
-    geo_tag: typeGeoTag
+create type typeThread if not exists as open {
+    uuid: string,
+    url: string,
+    site_full : string,
+    site : string,
+    site_section: string,
+    site_categories: [string],
+    section_title: string,
+    title: string,
+    title_full: string,
+    published: datetime,
+    replies_count: int64,
+    participants_count: int64,
+    site_type: string,
+    country: string,
+    spam_score: double,
+    main_image: string,
+    performance_score: int32,
+    domain_rank: int64?,
+    social: typeSocial
+}
+
+create type typePost if not exists as open{
+    thread: typeThread,
+    uuid: string,
+    url: string,
+    ord_in_thread: int32,
+    author: string,
+    published: datetime,
+    title: string,
+    text: string,
+    highlightText: string,
+    highlightTitle: string,
+    language: string,
+    external_links: [string],
+    entities: typeEntities,
+    rating: int64?,
+    crawled: datetime
 }
 
 create dataset ds_webhose_streaming(typeTweet) if not exists primary key id
