@@ -82,17 +82,18 @@ using compaction policy prefix (("max-mergable-component-size"="134217728"),("ma
 with filter on crawled;
 
 //"using" "compaction" "policy" CompactionPolicy ( Configuration )? )?
-create index text_idx if not exists on ds_tweet("text") type keyword;
-create index location_idx if not exists on ds_tweet(coordinate) type rtree;
-create index time_idx if not exists on ds_tweet(create_at) type btree;
-create index state_idx if not exists on ds_tweet(geo_tag.stateID) type btree;
-create index county_idx if not exists on ds_tweet(geo_tag.countyID) type btree;
-create index city_idx if not exists on ds_tweet(geo_tag.cityID) type btree;
+create index text_idx if not exists on ds_webhose_streaming(text) type keyword;
+create index location_idx if not exists on ds_webhose_streaming(entities.locations.name) type keyword;
+create index country_idx if not exists on ds_webhose_streaming(thread.country) type keyword;
+create index time_idx if not exists on ds_webhose_streaming(crawled) type btree;
+//create index state_idx if not exists on ds_webhose_streaming(geo_tag.stateID) type btree;
+//create index county_idx if not exists on ds_webhose_streaming(geo_tag.countyID) type btree;
+//create index city_idx if not exists on ds_webhose_streaming(geo_tag.cityID) type btree;
 
-create feed MessageFeed using localfs(
+create feed PostFeed using localfs(
 ("path"="nc1:///data/Mar31-2016-us.adm"),
 ("format"="adm"),
-("type-name"="typeTweet"));
+("type-name"="typePost"));
 
 set wait-for-completion-feed "true";
 connect feed MessageFeed to dataset ds_tweet;
