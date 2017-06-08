@@ -1,4 +1,4 @@
-drop dataverse webhose
+drop dataverse webhose if exists
 create dataverse webhose if not exists;
 use dataverse webhose
 
@@ -9,23 +9,23 @@ create type typeEntity if not exists as open{
 
 create type typeEntities if not exists as open{
     persons: [typeEntity],
-    organizations": [typeEntity],
-    locations": [typeEntity]
+    organizations: [typeEntity],
+    locations: [typeEntity]
 }
 
 create type typeActions if not exists as open{
     likes: int64?,
-    comments": int64?,
-    shares": int64?
+    comments: int64?,
+    shares: int64?
 }
 
 create type typeSocial if not exists as open{
-    facebook : typeActions,
-    gplus : typeActions,
-    pinterest : typeActions,
-    linkedin : typeActions,
-    stumbledupon : typeActions,
-    vk : typeActions
+    facebook: typeActions,
+    gplus: typeActions,
+    pinterest: typeActions,
+    linkedin: typeActions,
+    stumbledupon: typeActions,
+    vk: typeActions
 }
 
 create type typeGeoTag if not exists as open {
@@ -48,14 +48,14 @@ create type typeThread if not exists as open {
     title: string,
     title_full: string,
     published: datetime,
-    replies_count: int64,
-    participants_count: int64,
+    replies_count: int32,
+    participants_count: int32,
     site_type: string,
     country: string,
     spam_score: double,
     main_image: string,
     performance_score: int32,
-    domain_rank: int64?,
+    domain_rank: int32?,
     social: typeSocial
 }
 
@@ -73,13 +73,13 @@ create type typePost if not exists as open{
     language: string,
     external_links: [string],
     entities: typeEntities,
-    rating: int64?,
+    rating: double?,
     crawled: datetime
 }
 
-create dataset ds_webhose_streaming(typeTweet) if not exists primary key id
+create dataset ds_webhose_streaming(typePost) if not exists primary key uuid
 using compaction policy prefix (("max-mergable-component-size"="134217728"),("max-tolerance-component-count"="10"))
-with filter on create_at;
+with filter on crawled;
 
 //"using" "compaction" "policy" CompactionPolicy ( Configuration )? )?
 create index text_idx if not exists on ds_tweet("text") type keyword;
@@ -96,4 +96,3 @@ create feed MessageFeed using localfs(
 
 set wait-for-completion-feed "true";
 connect feed MessageFeed to dataset ds_tweet;
-
