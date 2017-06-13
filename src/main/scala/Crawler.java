@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.logging.Level;
@@ -73,6 +74,30 @@ public class Crawler {
         return filters;
     }
 
+    private static String ConvertToADMDatetime(String datetime){
+         return  "datetime(\"" + datetime + "\")";
+    }
+
+    private static String convertToADM(JsonElement post){
+
+        long id = new UUID(0, 10).getMostSignificantBits();
+        System.out.println(id);
+        post.getAsJsonObject().addProperty("id", id);
+        String crawled = post.getAsJsonObject().get("crawled").getAsString();
+        String published = post.getAsJsonObject().get("published").getAsString();
+        String threadPublished = post.getAsJsonObject().get("thread").getAsJsonObject().get("published").getAsString();
+
+        String admCrawled = ConvertToADMDatetime(crawled);
+        String admPublished = ConvertToADMDatetime(published);
+        String admThreadPublished = ConvertToADMDatetime(threadPublished);
+
+        post.getAsJsonObject().addProperty("crawled", admCrawled);
+        post.getAsJsonObject().addProperty("published", admPublished);
+        post.getAsJsonObject().get("thread").getAsJsonObject().addProperty("published", admThreadPublished);
+
+        return post.toString();
+    }
+
     private static long calculateTimestamp(int numberOfDays) {
         long millisecondsAgo = TimeUnit.DAYS.toMillis(numberOfDays);
         long currentMilliseconds = System.currentTimeMillis();
@@ -127,7 +152,7 @@ public class Crawler {
 
                     JsonArray results = result.getAsJsonObject().get("posts").getAsJsonArray();
                     for (JsonElement post : results) {
-                        String adm = post.toString();
+                        String adm = convertToADM(post);
                         feedSocket.ingest(adm);
                         bw.write(post.toString());
                     }
