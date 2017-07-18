@@ -1,6 +1,7 @@
 import asterix.FeedSocketAdapterClient;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.webhoseio.sdk.WebhoseIOClient;
 import util.CmdLineAux;
 import util.Config;
@@ -80,9 +81,11 @@ public class Crawler {
 
     private static String convertToADM(JsonElement post){
 
-        long id = new UUID(0, 10).getMostSignificantBits();
+        long id = UUID.randomUUID().getMostSignificantBits();
         System.out.println(id);
-        post.getAsJsonObject().addProperty("id", id);
+        JsonObject postWithId = post.getAsJsonObject();
+        postWithId.addProperty("id", id);
+
         String crawled = post.getAsJsonObject().get("crawled").getAsString();
         String published = post.getAsJsonObject().get("published").getAsString();
         String threadPublished = post.getAsJsonObject().get("thread").getAsJsonObject().get("published").getAsString();
@@ -91,11 +94,13 @@ public class Crawler {
         String admPublished = ConvertToADMDatetime(published);
         String admThreadPublished = ConvertToADMDatetime(threadPublished);
 
-        post.getAsJsonObject().addProperty("crawled", admCrawled);
-        post.getAsJsonObject().addProperty("published", admPublished);
-        post.getAsJsonObject().get("thread").getAsJsonObject().addProperty("published", admThreadPublished);
+        postWithId.addProperty("crawled", admCrawled);
+        postWithId.addProperty("published", admPublished);
+        JsonObject admThread = post.getAsJsonObject().get("thread").getAsJsonObject();
+        admThread.addProperty("published", admThreadPublished);
+        postWithId.add("thread", admThread);
 
-        return post.toString();
+        return postWithId.toString();
     }
 
     private static long calculateTimestamp(int numberOfDays) {
@@ -131,7 +136,7 @@ public class Crawler {
             logger.info("Query string: " + filters);
 
             try {
-                FeedSocketAdapterClient feedSocket = Crawler.openSocket(config);
+                //FeedSocketAdapterClient feedSocket = Crawler.openSocket(config);
                 WebhoseIOClient webhoseClient = WebhoseIOClient.getInstance(config.getApiKey());
                 // Create set of queries
                 Map<String, String> queries = new HashMap<String, String>();
@@ -153,7 +158,7 @@ public class Crawler {
                     JsonArray results = result.getAsJsonObject().get("posts").getAsJsonArray();
                     for (JsonElement post : results) {
                         String adm = convertToADM(post);
-                        feedSocket.ingest(adm);
+                        //feedSocket.ingest(adm);
                         bw.write(post.toString());
                     }
                     result = webhoseClient.getNext();

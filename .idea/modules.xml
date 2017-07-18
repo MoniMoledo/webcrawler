@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/webcrawler.iml" filepath="$PROJECT_DIR$/.idea/modules/webcrawler.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/webcrawler-build.iml" filepath="$PROJECT_DIR$/.idea/modules/webcrawler-build.iml" />
       <module fileurl="file://$PROJECT_DIR$/webhoseio-java-sdk-master/webhoseio-java-sdk.iml" filepath="$PROJECT_DIR$/webhoseio-java-sdk-master/webhoseio-java-sdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/webhoseio-java-sdk-master/webhoseio-java-sdk.iml" filepath="$PROJECT_DIR$/webhoseio-java-sdk-master/webhoseio-java-sdk.iml" />
     </modules>
   </component>
 </project>

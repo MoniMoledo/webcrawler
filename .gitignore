@@ -9,7 +9,6 @@ tmp
 .sbtserver.*
 dist
 /bin/
-/*.iml
 /out
 /.idea/.name
 /.idea/compiler.xml
