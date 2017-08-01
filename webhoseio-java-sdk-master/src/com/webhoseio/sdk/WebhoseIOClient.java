@@ -83,9 +83,10 @@ public class WebhoseIOClient {
 			
 			return getResponse(builder.toString());
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			throw e;
 		}
-		return null;
+		//return null;
 	}
 	
 	/**
