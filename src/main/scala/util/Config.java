@@ -41,6 +41,9 @@ public class Config {
     @Option(name = "-fo", aliases = "--file-only", usage = "Only store in a file, do not geotag nor ingest, default false")
     private boolean isFileOnly = false;
 
+    @Option(name = "-tglurl", aliases = "--textgeolocatorurl", usage = "Url of the TextGeoLocator API")
+    private String textGeoLocatorUrl = "http://localhost:9000/location";
+
     public String getApiKey() {
         return apiKey;
     }
@@ -83,5 +86,9 @@ public class Config {
 
     public String getSite() {
         return site;
+    }
+
+    public String getTextGeoLocatorUrl() {
+        return textGeoLocatorUrl;
     }
 }
