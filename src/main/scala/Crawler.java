@@ -127,6 +127,7 @@ public class Crawler {
     public static void main(String[] args) throws Exception {
 
         Config config = CmdLineAux.parseCmdLineArgs(args);
+        TextGeoLocatorIntegration integration = new TextGeoLocatorIntegration();
 
         try (BufferedWriter bw = createWriter("webhose")) {
 
@@ -140,15 +141,14 @@ public class Crawler {
 
                 WebhoseIOClient webhoseClient = WebhoseIOClient.getInstance(config.getApiKey());
                 // Create set of queries
-                Map<String, String> queries = new HashMap<String, String>();
+                Map<String, String> queries = new HashMap();
 
                 queries.put("q", filters);
                 queries.put("ts", String.valueOf(timestamp));
 
                 // Fetch query result
                 JsonElement result = webhoseClient.query("filterWebContent", queries);
-
-                int moreResultsAvailable = result.getAsJsonObject().get("moreResultsAvailable").getAsInt();
+                int moreResultsAvailable;
                 int requestsLeft = result.getAsJsonObject().get("requestsLeft").getAsInt();
                 int totalResults = result.getAsJsonObject().get("totalResults").getAsInt();
 
@@ -158,6 +158,9 @@ public class Crawler {
                    moreResultsAvailable = result.getAsJsonObject().get("moreResultsAvailable").getAsInt();
                    JsonArray results = result.getAsJsonObject().get("posts").getAsJsonArray();
                     for (JsonElement post : results) {
+
+                        JsonElement geoTagValue = integration.geoTag(config.getTextGeoLocatorUrl(), post.getAsJsonObject().get("text").getAsString());
+                        post.getAsJsonObject().add("geo_tag", geoTagValue);
                         String adm = convertToADM(post);
                         //feedSocket.ingest(adm);
                         bw.write(post.toString());
