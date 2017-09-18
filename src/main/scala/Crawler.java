@@ -64,11 +64,13 @@ public class Crawler {
         String location_filter = "location: ";
         String thread_country_filter = "thread.country: ";
 
-//        String zika = "\"zika\"";
-//        String febreAmarela = "\"febre amarela\"";
-//        String chikungunya = "\"chikungunya\"";
-//        String dengue = "\"dengue\"";
+        String zika = "\"zika\"";
+        String febreAmarela = "\"febre amarela\"";
+        String chikungunya = "\"chikungunya\"";
+        String dengue = "\"dengue\"";
+
         String escapedKeyword = "\"" + keyword + "\"";
+
 
         String filters = "(" + escapedKeyword + ")" + AND + thread_country_filter + countryCode;
 
@@ -159,8 +161,8 @@ public class Crawler {
                    JsonArray results = result.getAsJsonObject().get("posts").getAsJsonArray();
                     for (JsonElement post : results) {
 
-                        JsonElement geoTagValue = integration.geoTag(config.getTextGeoLocatorUrl(), post.getAsJsonObject().get("text").getAsString());
-                        post.getAsJsonObject().add("geo_tag", geoTagValue);
+                        String geoTagValue = integration.geoTag(config.getTextGeoLocatorUrl(), post.getAsJsonObject().get("text").getAsString());
+                        post.getAsJsonObject().addProperty("geo_tag", geoTagValue);
                         String adm = convertToADM(post);
                         //feedSocket.ingest(adm);
                         bw.write(post.toString());
@@ -169,7 +171,6 @@ public class Crawler {
                     result = webhoseClient.getNext();
                 } while (moreResultsAvailable > 0);
             } catch (IOException ex) {
-
                 int httpResponseCode = getHttpResponseCode(ex.getMessage());
 
                 switch (httpResponseCode) {
