@@ -139,7 +139,7 @@ public class Crawler {
             logger.info("Query string: " + filters);
 
             try {
-                //FeedSocketAdapterClient feedSocket = Crawler.openSocket(config);
+                FeedSocketAdapterClient feedSocket = Crawler.openSocket(config);
 
                 WebhoseIOClient webhoseClient = WebhoseIOClient.getInstance(config.getApiKey());
                 // Create set of queries
@@ -164,7 +164,7 @@ public class Crawler {
                         String geoTagValue = integration.geoTag(config.getTextGeoLocatorUrl(), post.getAsJsonObject().get("text").getAsString());
                         post.getAsJsonObject().addProperty("geo_tag", geoTagValue);
                         String adm = convertToADM(post);
-                        //feedSocket.ingest(adm);
+                        feedSocket.ingest(adm);
                         bw.write(post.toString());
                     }
                     if(moreResultsAvailable > 0)

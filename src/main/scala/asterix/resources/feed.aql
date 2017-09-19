@@ -2,7 +2,7 @@ use dataverse webhose;
 drop feed PostFeed if exists;
 create feed PostFeed using socket_adapter
 (
-    ("sockets"="webcrawler_ac:10001"),
+    ("sockets"="blue:10010"),
     ("address-type"="nc"),
     ("type-name"="typePost"),
     ("format"="adm")
@@ -12,14 +12,4 @@ set wait-for-completion-feed "false";
 
 connect feed PostFeed to dataset ds_webhose_streaming;
 
-
-
-//create feed MessageFeed using localfs(
-//("path"="nc1:///data/Mar31-2016-us.adm"),
-//("format"="adm"),
-//("type-name"="typeTweet"));
-
-//set wait-for-completion-feed "true";
-//connect feed MessageFeed to dataset ds_tweet;
-
-
+start feed PostFeed;
