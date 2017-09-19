@@ -3,12 +3,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.webhoseio.sdk.WebhoseIOClient;
+import integration.TextGeoLocatorIntegration;
 import util.CmdLineAux;
 import util.Config;
 import util.FileLogger;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -64,18 +64,20 @@ public class Crawler {
         String location_filter = "location: ";
         String thread_country_filter = "thread.country: ";
 
-//        String zika = "\"zika\"";
-//        String febreAmarela = "\"febre amarela\"";
-//        String chikungunya = "\"chikungunya\"";
-//        String dengue = "\"dengue\"";
+        String zika = "\"zika\"";
+        String febreAmarela = "\"febre amarela\"";
+        String chikungunya = "\"chikungunya\"";
+        String dengue = "\"dengue\"";
+
         String escapedKeyword = "\"" + keyword + "\"";
+
 
         String filters = "(" + escapedKeyword + ")" + AND + thread_country_filter + countryCode;
 
         return filters;
     }
 
-    private static String ConvertToADMDatetime(String datetime){
+    private static String convertToADMDatetime(String datetime){
          return  "datetime(\"" + datetime + "\")";
     }
 
@@ -90,9 +92,9 @@ public class Crawler {
         String published = post.getAsJsonObject().get("published").getAsString();
         String threadPublished = post.getAsJsonObject().get("thread").getAsJsonObject().get("published").getAsString();
 
-        String admCrawled = ConvertToADMDatetime(crawled);
-        String admPublished = ConvertToADMDatetime(published);
-        String admThreadPublished = ConvertToADMDatetime(threadPublished);
+        String admCrawled = convertToADMDatetime(crawled);
+        String admPublished = convertToADMDatetime(published);
+        String admThreadPublished = convertToADMDatetime(threadPublished);
 
         postWithId.addProperty("crawled", admCrawled);
         postWithId.addProperty("published", admPublished);
@@ -127,6 +129,7 @@ public class Crawler {
     public static void main(String[] args) throws Exception {
 
         Config config = CmdLineAux.parseCmdLineArgs(args);
+        TextGeoLocatorIntegration integration = new TextGeoLocatorIntegration();
 
         try (BufferedWriter bw = createWriter("webhose")) {
 
@@ -137,36 +140,37 @@ public class Crawler {
 
             try {
                 //FeedSocketAdapterClient feedSocket = Crawler.openSocket(config);
+
                 WebhoseIOClient webhoseClient = WebhoseIOClient.getInstance(config.getApiKey());
                 // Create set of queries
-                Map<String, String> queries = new HashMap<String, String>();
+                Map<String, String> queries = new HashMap();
 
                 queries.put("q", filters);
                 queries.put("ts", String.valueOf(timestamp));
 
                 // Fetch query result
                 JsonElement result = webhoseClient.query("filterWebContent", queries);
-
-                int moreResultsAvailable = result.getAsJsonObject().get("moreResultsAvailable").getAsInt();
+                int moreResultsAvailable;
                 int requestsLeft = result.getAsJsonObject().get("requestsLeft").getAsInt();
                 int totalResults = result.getAsJsonObject().get("totalResults").getAsInt();
 
                 logger.info("Requests left: " + requestsLeft + " Total results: " + totalResults);
 
-                while (moreResultsAvailable > 0) {
-
-                    JsonArray results = result.getAsJsonObject().get("posts").getAsJsonArray();
+               do{
+                   moreResultsAvailable = result.getAsJsonObject().get("moreResultsAvailable").getAsInt();
+                   JsonArray results = result.getAsJsonObject().get("posts").getAsJsonArray();
                     for (JsonElement post : results) {
+
+                        String geoTagValue = integration.geoTag(config.getTextGeoLocatorUrl(), post.getAsJsonObject().get("text").getAsString());
+                        post.getAsJsonObject().addProperty("geo_tag", geoTagValue);
                         String adm = convertToADM(post);
                         //feedSocket.ingest(adm);
                         bw.write(post.toString());
                     }
+                    if(moreResultsAvailable > 0)
                     result = webhoseClient.getNext();
-                    moreResultsAvailable = result.getAsJsonObject().get("moreResultsAvailable").getAsInt();
-
-                }
+                } while (moreResultsAvailable > 0);
             } catch (IOException ex) {
-
                 int httpResponseCode = getHttpResponseCode(ex.getMessage());
 
                 switch (httpResponseCode) {
