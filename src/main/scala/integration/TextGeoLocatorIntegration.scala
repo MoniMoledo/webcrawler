@@ -41,6 +41,9 @@ class TextGeoLocatorIntegration {
 
     if(statusCode != 200){
       logger.log(Level.SEVERE, responseString)
+      if(responseString.contains("JsResultException")){
+        logger.log(Level.INFO, text)
+      }
       return null
     }
 
