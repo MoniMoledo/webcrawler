@@ -2,123 +2,66 @@ use dataverse webhose;
 
     insert into dataset ds_webhose_streaming
     ({
-      "thread": {
-        "uuid": "bab96bdf470524cd5c37a1456a81a259f9c18d6e",
-        "url": "http://omgili.com/ri/t1o2C2H78UdfkCmqpg8jbkX0qIpLxLRXAjxwdecLMdKRBk0Jsi7p94bCZVi2vqEd8bItHYCJ4y9XJL.Kdhl38b7F28ZM3IQKEoMSicdMYlEbYi1QmlcvHA--",
-        "site_full": "dfw.cbslocal.com",
-        "site": "cbslocal.com",
-        "site_section": "http://dfw.cbslocal.com/feed/",
-        "site_categories": [],
-        "section_title": "CBS Dallas / Fort Worth",
-        "title": "Trump Raps Justice Appeal In Travel Ban Case",
-        "title_full": "Trump Raps Justice Appeal In Travel Ban Case",
-        "published": datetime("2017-06-05T17:16:39.000+03:00"),
-        "replies_count": 0,
-        "participants_count": 1,
-        "site_type": "news",
-        "country": "US",
-        "spam_score": 0.0,
-        "main_image": "https://cbsdallas.files.wordpress.com/2017/04/gettyimages-673473568.jpg?w=1024",
-        "performance_score": 0,
-        "domain_rank": 1192,
-        "social": {
-          "facebook": {
-            "likes": 94,
-            "comments": 0,
-            "shares": 94
-          },
-          "gplus": {
-            "shares": 0
-          },
-          "pinterest": {
-            "shares": 0
-          },
-          "linkedin": {
-            "shares": 0
-          },
-          "stumbledupon": {
-            "shares": 0
-          },
-          "vk": {
-            "shares": 0
-          }
-        }
+  "thread": {
+    "uuid": "cc8dcd73e362e6d68b5a55bd36762b28113f1a61",
+    "url": "http://omgili.com/ri/7aBdisT0NOq6USAatNaXlB.7WP_5dtGRB7aBjSkSmplhtw4DXAznbyDC0iwMEVnDEVLgQXZsr25fkQmYN2wPXzxV37p7JXk7OP3MaOXq41OekBL.m6X_Zw--",
+    "site_full": "socelnews.blogspot.com",
+    "site": "blogspot.com",
+    "site_section": "http://socelnews.blogspot.com/",
+    "site_categories": [],
+    "section_title": "Socel News - Blog do jornalista Celso Freire",
+    "title": "Unama realiza campanha Saúde na Estrada",
+    "title_full": "Unama realiza campanha Saúde na Estrada",
+    "published": "datetime(\"2017-09-18T18:00:00.000+03:00\")",
+    "replies_count": 0,
+    "participants_count": 1,
+    "site_type": "blogs",
+    "country": "BR",
+    "spam_score": 0.0,
+    "main_image": null,
+    "performance_score": 0,
+    "domain_rank": null,
+    "social": {
+      "facebook": {
+        "likes": 0,
+        "comments": 0,
+        "shares": 0
       },
-      "uuid": "bab96bdf470524cd5c37a1456a81a259f9c18d6e",
-      "url": "http://omgili.com/ri/t1o2C2H78UdfkCmqpg8jbkX0qIpLxLRXAjxwdecLMdKRBk0Jsi7p94bCZVi2vqEd8bItHYCJ4y9XJL.Kdhl38b7F28ZM3IQKEoMSicdMYlEbYi1QmlcvHA--",
-      "ord_in_thread": 0,
-      "author": "CBS Dallas / Fort Worth",
-      "published": datetime("2017-06-05T17:16:39.000+03:00"),
-      "title": "Trump Raps Justice Appeal In Travel Ban Case",
-      "text": "Trump Raps Justice Appeal In Travel Ban Case June 5, 2017 6:13 AM Filed Under: Attack , executive order , Justice Department , London , Politics , President Donald Trump , Radical Islam , social media , travel , Travel Ban , Twitter \nPresident Donald Trump is criticizing his own Justice Department for asking the Supreme Court to review a “watered down, politically correct version” of the travel ban he signed in March. \nIn a series of morning tweets, Trump says the Justice Department “should have stayed” with the first travel ban executive order. Both orders, aimed at temporarily halting entry to the U.S. from a half-dozen Muslim-majority countries, have been blocked by the lower courts. The Justice Dept. should have stayed with the original Travel Ban, not the watered down, politically correct version they submitted to S.C. \n— Donald J. Trump (@realDonaldTrump) June 5, 2017 \nThe March directive narrowed the scope of the original order, which was hastily unveiled during Trump’s first week in office. \nTrump says the Justice Department should ask for an “expedited hearing” on the second ban and “seek much tougher version!” The Justice Dept. should ask for an expedited hearing of the watered down Travel Ban before the Supreme Court –& seek much tougher version! \n— Donald J. Trump (@realDonaldTrump) June 5, 2017 \nThe president has stepped up his calls for implementing the travel ban following the weekend attacks in London. In any event we are EXTREME VETTING people coming into the U.S. in order to help keep our country safe. The courts are slow and political! \n— Donald J. Trump (@realDonaldTrump) June 5, 2017 \n(© Copyright 2017 The Associated Press. All Rights Reserved. This material may not be published, broadcast, rewritten or redistributed.)",
-      "highlightText": "",
-      "highlightTitle": "",
-      "language": "english",
-      "external_links": [],
-      "entities": {
-        "persons": [
-          {
-            "name": "— donald j. trump",
-            "sentiment": "none"
-          },
-          {
-            "name": "donald trump",
-            "sentiment": "none"
-          },
-          {
-            "name": "donald j. trump",
-            "sentiment": "none"
-          },
-          {
-            "name": "trump",
-            "sentiment": "none"
-          }
-        ],
-        "organizations": [
-          {
-            "name": "trump raps justice appeal in travel ban case trump raps justice",
-            "sentiment": "negative"
-          },
-          {
-            "name": "justice dept.",
-            "sentiment": "none"
-          },
-          {
-            "name": "justice department",
-            "sentiment": "none"
-          },
-          {
-            "name": "radical islam",
-            "sentiment": "none"
-          },
-          {
-            "name": "associated press",
-            "sentiment": "none"
-          },
-          {
-            "name": "supreme court",
-            "sentiment": "none"
-          },
-          {
-            "name": "travel ban",
-            "sentiment": "none"
-          }
-        ],
-        "locations": [
-          {
-            "name": "s.c.",
-            "sentiment": "none"
-          },
-          {
-            "name": "u.s.",
-            "sentiment": "none"
-          },
-          {
-            "name": "london",
-            "sentiment": "none"
-          }
-        ]
+      "gplus": {
+        "shares": 0
       },
-      "rating": null,
-      "crawled": datetime("2017-06-05T17:16:39.000+03:00")
-    });
+      "pinterest": {
+        "shares": 0
+      },
+      "linkedin": {
+        "shares": 0
+      },
+      "stumbledupon": {
+        "shares": 0
+      },
+      "vk": {
+        "shares": 0
+      }
+    }
+  },
+  "uuid": "cc8dcd73e362e6d68b5a55bd36762b28113f1a61",
+  "url": "http://omgili.com/ri/7aBdisT0NOq6USAatNaXlB.7WP_5dtGRB7aBjSkSmplhtw4DXAznbyDC0iwMEVnDEVLgQXZsr25fkQmYN2wPXzxV37p7JXk7OP3MaOXq41OekBL.m6X_Zw--",
+  "ord_in_thread": 0,
+  "author": "Celso Freire (noreply@blogger.com)",
+  "published": "datetime(\"2017-09-18T18:00:00.000+03:00\")",
+  "title": "Unama realiza campanha Saúde na Estrada",
+  "text": "\n\nA saúde do motorista é um problema que se assola em todo o Brasil. De acordo com a Organização Mundial da Saúde (OMS), o trânsito intenso provoca altas taxas de estresse em motoristas. A partir disso, a Universidade da Amazônia (UNAMA), em parceria com os postos Ipiranga, realizam a campanha Saúde na Estrada, nesta segunda-feira (18), a partir das 13h, na BR – 316. \nOs principais procedimentos desenvolvidos serão orientação sobre DST/AIDS, dengue, saúde do homem, verificação da pressão arterial, glicemia, vacinação para adultos e verificação nutricional com balança de bioimpedância. Todos os procedimentos serão oferecidos de maneira gratuita. \n\nDe acordo com a coordenadora do curso de Enfermagem, Renata Lopes, a campanha também envolve alunos do curso. “O nosso objetivo é conscientizar a população sobre a importância de se estar em dia com a nossa saúde e promover um aprendizado prático com os nossos alunos”, destacou.  ",
+  "highlightText": "",
+  "highlightTitle": "",
+  "language": "portuguese",
+  "external_links": [],
+  "entities": {
+    "persons": [],
+    "organizations": [],
+    "locations": []
+  },
+  "rating": null,
+  "crawled": datetime("2017-09-18T18:00:11.013+03:00"),
+  "geo_tag": null,
+  "id": 3283040206404734912
+});

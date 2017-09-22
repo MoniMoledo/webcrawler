@@ -1,7 +1,5 @@
 import asterix.FeedSocketAdapterClient;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.webhoseio.sdk.WebhoseIOClient;
 import integration.TextGeoLocatorIntegration;
 import util.CmdLineAux;
@@ -78,12 +76,12 @@ public class Crawler {
     }
 
     private static String convertToADMDatetime(String datetime){
-         return  "datetime(\"" + datetime + "\")";
+         return  "datetime('" + datetime + "')";
     }
 
     private static String convertToADM(JsonElement post){
 
-        long id = UUID.randomUUID().getMostSignificantBits();
+        long id = UUID.randomUUID().getLeastSignificantBits();
         System.out.println(id);
         JsonObject postWithId = post.getAsJsonObject();
         postWithId.addProperty("id", id);
@@ -102,7 +100,9 @@ public class Crawler {
         admThread.addProperty("published", admThreadPublished);
         postWithId.add("thread", admThread);
 
-        return postWithId.toString();
+        String postString = postWithId.toString();
+        String admPost = postString.replaceAll("\\\"datetime\\((.{31})\\)\\\"", "datetime($1)");
+        return admPost;
     }
 
     private static long calculateTimestamp(int numberOfDays) {
@@ -162,7 +162,12 @@ public class Crawler {
                     for (JsonElement post : results) {
 
                         String geoTagValue = integration.geoTag(config.getTextGeoLocatorUrl(), post.getAsJsonObject().get("text").getAsString());
-                        post.getAsJsonObject().addProperty("geo_tag", geoTagValue);
+                        JsonElement jsonGeoTag = null;
+                        if(geoTagValue != null){
+                            jsonGeoTag = new JsonParser().parse(geoTagValue);
+                        }
+
+                        post.getAsJsonObject().add("geo_tag", jsonGeoTag);
                         String adm = convertToADM(post);
                         feedSocket.ingest(adm);
                         bw.write(post.toString());
