@@ -87,6 +87,7 @@ public class Crawler {
                     logger.log(Level.SEVERE, ex.getMessage());
                     throw ex;
                 }
+                Thread.sleep(86400);
             }
         }
     }
