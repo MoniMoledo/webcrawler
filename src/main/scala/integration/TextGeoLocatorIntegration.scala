@@ -1,6 +1,6 @@
 package integration
 
-import java.util.logging.{Level, Logger}
+import java.util.logging.{Level}
 
 import com.google.gson.JsonObject
 import org.apache.http.client.methods.HttpPost
