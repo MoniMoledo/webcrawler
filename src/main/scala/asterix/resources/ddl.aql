@@ -38,7 +38,7 @@ create type typeGeoTag if not exists as open {
 }
 
 create type typeThread if not exists as open {
-    uuid: string,
+    uuid: uuid,
     url: string,
     site_full : string,
     site : string,
@@ -61,7 +61,7 @@ create type typeThread if not exists as open {
 
 create type typePost if not exists as open{
     thread: typeThread,
-    uuid: string,
+    uuid: uuid,
     url: string,
     ord_in_thread: int32,
     author: string,
@@ -75,11 +75,11 @@ create type typePost if not exists as open{
     entities: typeEntities,
     rating: double?,
     crawled: datetime,
-    id: int64,
+   //id: int64,
     geo_tag: typeGeoTag?
 }
 
-create dataset ds_webhose_streaming(typePost) if not exists primary key id
+create dataset ds_webhose_streaming(typePost) if not exists primary key uuid
 create index text_idx if not exists on ds_webhose_streaming(text) type keyword;
 create index country_idx if not exists on ds_webhose_streaming(thread.country) type keyword;
 create index time_idx if not exists on ds_webhose_streaming(crawled) type btree;
