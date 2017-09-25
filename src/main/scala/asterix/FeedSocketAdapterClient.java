@@ -3,7 +3,7 @@ package asterix;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-
+import org.apache.commons.codec.binary.Hex;
 public class FeedSocketAdapterClient {
     private OutputStream out = null;
     private int recordCount = 0;
