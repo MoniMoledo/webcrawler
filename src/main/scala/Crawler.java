@@ -2,7 +2,7 @@ import integration.AsterixIntegration;
 import asterix.FeedSocketAdapterClient;
 import com.google.gson.*;
 import integration.TextGeoLocatorIntegration;
-import integration.WebhoseIntegration;
+import integration.webhose.WebhoseIntegration;
 import util.CmdLineAux;
 import util.Config;
 import util.FileLogger;

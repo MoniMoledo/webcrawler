@@ -1,7 +1,6 @@
-package integration;
+package integration.webhose;
 
 import com.google.gson.JsonElement;
-import com.webhoseio.sdk.WebhoseIOClient;
 import util.FileLogger;
 
 import java.io.IOException;
