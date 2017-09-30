@@ -1,7 +1,15 @@
 package util;
 
 
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.kohsuke.args4j.OptionDef;
+import org.kohsuke.args4j.spi.OptionHandler;
+import org.kohsuke.args4j.spi.Parameters;
+import org.kohsuke.args4j.spi.Setter;
+
+import java.util.ArrayList;
 
 /**
  * Created by monique on 04/06/17.
@@ -11,8 +19,8 @@ public class Config {
     @Option(name = "-tk", aliases = "--api-key", usage = "API key to use Webhose.io")
     private String apiKey = null;
 
-    @Option(name = "-kw", aliases = "--keyword", usage = "Keyword to search for")
-    private String keyword = null;
+    @Option(name = "-kw", aliases = "--keywords", handler = TermArrayOptionHandler.class, usage = "Keywords to search for")
+    private String[] keywords = new String[]{};
 
     @Option(name = "-co", aliases = "--country-code", usage = "Thread country code")
     private String country = null;
@@ -72,8 +80,8 @@ public class Config {
         return isFileOnly;
     }
 
-    public String getKeyword() {
-        return keyword;
+    public String[] getKeywords() {
+        return keywords;
     }
 
     public String getCountry() {
@@ -90,5 +98,47 @@ public class Config {
 
     public String getTextGeoLocatorUrl() {
         return textGeoLocatorUrl;
+    }
+
+    public static class TermArrayOptionHandler extends OptionHandler<String[]> {
+
+        public TermArrayOptionHandler(CmdLineParser parser, OptionDef option,
+                                      Setter<? super String[]> setter) {
+            super(parser, option, setter);
+        }
+
+        @Override
+        public int parseArguments(Parameters params) throws CmdLineException {
+            int counter = 0;
+            ArrayList<String> terms = new ArrayList<String>();
+            while (true) {
+                String param;
+                try {
+                    param = params.getParameter(counter);
+                } catch (CmdLineException ex) {
+                    ex.printStackTrace();
+                    System.out.println("keywords exception");
+                    break;
+                }
+                if (param.startsWith("-")) {
+                    break;
+                }
+                for (String str : param.split(",")) {
+                    if (str.trim().length() > 0) {
+                        terms.add(str.trim());
+                    }
+                }
+                counter++;
+            }
+            Setter s = this.setter;
+            for (String term : terms)
+                s.addValue(term);
+            return counter;
+
+        }
+        @Override
+        public String getDefaultMetaVariable() {
+            return "String[]";
+        }
     }
 }

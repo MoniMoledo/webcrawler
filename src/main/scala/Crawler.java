@@ -42,7 +42,7 @@ public class Crawler {
 
     public static void main(String[] args) throws Exception {
 
-        Config config = CmdLineAux.parseCmdLineArgs(args);
+        Config config = CmdLineAux.parseCmdLine(args);
 
         FeedSocketAdapterClient feedSocket = AsterixIntegration.openSocket(config);
 
@@ -57,7 +57,7 @@ public class Crawler {
             while (requestsLeft > 0) {
                 try {
                     // Fetch query result
-                    JsonElement result = webhose.query(timestamp, config.getKeyword(), config.getCountry(), false);
+                    JsonElement result = webhose.query(timestamp, config.getKeywords(), config.getCountry(), false);
                     int moreResultsAvailable;
 
                     requestsLeft = result.getAsJsonObject().get("requestsLeft").getAsInt();

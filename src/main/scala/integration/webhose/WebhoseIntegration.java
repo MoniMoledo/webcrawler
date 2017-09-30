@@ -24,7 +24,7 @@ public class WebhoseIntegration {
         webhoseClient = WebhoseIOClient.getInstance(apiKey);
     }
 
-    public JsonElement query(long timestamp, String keyword, String countryCode, boolean isNext) throws Exception {
+    public JsonElement query(long timestamp, String[] keywords, String countryCode, boolean isNext) throws Exception {
 
         JsonElement result = null;
 
@@ -34,7 +34,7 @@ public class WebhoseIntegration {
             } else {
                 // Create set of queries
                 Map<String, String> queries = new HashMap();
-                String query = getQueryString(keyword, countryCode);
+                String query = getQueryString(keywords, countryCode);
 
                 queries.put("q", query);
                 queries.put("ts", String.valueOf(timestamp));
@@ -68,7 +68,7 @@ public class WebhoseIntegration {
     }
 
     public JsonElement queryNext() throws Exception {
-        return query(0, "", "", true);
+        return query(0, new String[0], "", true);
     }
 
     private static int getHttpResponseCode(String exceptionMessage) {
@@ -85,21 +85,16 @@ public class WebhoseIntegration {
         }
     }
 
-    private String getQueryString(String keyword, String countryCode) {
+    private String getQueryString(String[] keywords, String countryCode) {
 
         String OR = " OR ";
         String AND = " AND ";
         String location_filter = "location: ";
         String thread_country_filter = "thread.country: ";
 
-        String zika = "\"zika\"";
-        String febreAmarela = "\"febre amarela\"";
-        String chikungunya = "\"chikungunya\"";
-        String dengue = "\"dengue\"";
+        String optionalKeywords = String.join(OR, keywords);
 
-        String escapedKeyword = "\"" + keyword + "\"";
-
-        String query = "(" + escapedKeyword + ")" + AND + thread_country_filter + countryCode;
+        String query = "(" + optionalKeywords + ")" + AND + thread_country_filter + countryCode;
 
         return query;
     }

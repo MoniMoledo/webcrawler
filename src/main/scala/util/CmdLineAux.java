@@ -9,14 +9,14 @@ import org.kohsuke.args4j.CmdLineParser;
  */
 public class CmdLineAux {
 
-    public static Config parseCmdLineArgs(String[] args){
-
+    public static Config parseCmdLine(String[] args) {
         Config config = new Config();
         CmdLineParser parser = new CmdLineParser(config);
-        try{
+        try {
             parser.parseArgument(args);
-        }catch(CmdLineException ex){
-            System.err.println(ex.toString());
+        } catch (CmdLineException e) {
+            System.err.println(e);
+            parser.printUsage(System.err);
         }
         return config;
     }
