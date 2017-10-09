@@ -2,7 +2,7 @@ import integration.AsterixIntegration;
 import asterix.FeedSocketAdapterClient;
 import com.google.gson.*;
 import integration.TextGeoLocatorIntegration;
-import integration.WebhoseIntegration;
+import integration.webhose.WebhoseIntegration;
 import util.CmdLineAux;
 import util.Config;
 import util.FileLogger;
@@ -42,7 +42,7 @@ public class Crawler {
 
     public static void main(String[] args) throws Exception {
 
-        Config config = CmdLineAux.parseCmdLineArgs(args);
+        Config config = CmdLineAux.parseCmdLine(args);
 
         FeedSocketAdapterClient feedSocket = AsterixIntegration.openSocket(config);
 
@@ -57,7 +57,7 @@ public class Crawler {
             while (requestsLeft > 0) {
                 try {
                     // Fetch query result
-                    JsonElement result = webhose.query(timestamp, config.getKeyword(), config.getCountry(), false);
+                    JsonElement result = webhose.query(timestamp, config.getKeywords(), config.getCountry(), false);
                     int moreResultsAvailable;
 
                     requestsLeft = result.getAsJsonObject().get("requestsLeft").getAsInt();
@@ -87,7 +87,7 @@ public class Crawler {
                     logger.log(Level.SEVERE, ex.getMessage());
                     throw ex;
                 }
-                Thread.sleep(86400);
+                Thread.sleep(86400000);
             }
         }
     }
