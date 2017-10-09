@@ -17,7 +17,7 @@ object TwitterJSONTagBrToADM {
 
   val usage =
     """
-      |Usage: USHierarchyBuilder -state /path/to/state.json -county /path/to/county.json -city /path/to/city.json
+      |Usage: BrHierarchyBuilder -state /path/to/state.json -county /path/to/county.json -city /path/to/city.json
       |It will read the status from stdIn, geoTag city/county/state information, and then convert it to ADM format
     """.stripMargin
 
@@ -25,9 +25,9 @@ object TwitterJSONTagBrToADM {
     list match {
       case Nil =>
       case "-h" :: tail => System.err.println(usage); System.exit(0)
-      case "-country" :: value :: tail => shapeMap += CountyLevel -> value; parseOption(tail)
-      case "-state" :: value :: tail => shapeMap += StateLevel -> value; parseOption(tail)
-      //case "-city" :: value :: tail => shapeMap += CityLevel -> value; parseOption(tail)
+      case "-country" :: value :: tail => shapeMap += BrCountryLevel -> value; parseOption(tail)
+      case "-state" :: value :: tail => shapeMap += BrStateLevel -> value; parseOption(tail)
+      case "-city" :: value :: tail => shapeMap += BrCityLevel -> value; parseOption(tail)
       case option :: tail => System.err.println("unknown option:" + option); System.err.println(usage); System.exit(1);
     }
   }
