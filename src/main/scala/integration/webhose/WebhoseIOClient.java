@@ -1,4 +1,4 @@
-package com.webhoseio.sdk;
+package integration.webhose;
 
 import java.io.BufferedReader;
 import java.io.IOException;
