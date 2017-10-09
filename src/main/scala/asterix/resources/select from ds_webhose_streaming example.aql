@@ -1,5 +1,0 @@
-use dataverse webhose;
-
-for $post in dataset ds_webhose_streaming
-    where $post.uuid = "bab96bdf470524cd5c37a1456a81a259f9c18d6e"
-    return $post.thread;

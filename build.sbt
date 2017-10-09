@@ -1,8 +1,8 @@
-name := "WebCrawler"
+import Dependencies._
 
-version := "1.0"
+name := "Crawler"
 
-scalaVersion := "2.12.2"
+resolvers += Resolver.url("scoverage-bintray", url("https://dl.bintray.com/sksamuel/sbt-plugins/"))(Resolver.ivyStylePatterns)
 
 lazy val crawler = project.in(file(".")).settings(
   libraryDependencies ++= Seq( "args4j" % "args4j" % "2.33",
@@ -26,8 +26,23 @@ lazy val webhose = project.in(file("webhoseio-java-sdk-master")).
         "org.apache.httpcomponents" % "httpcore" % "4.4.6")
   }
 
+lazy val util = (project in file("util")).
+  settings(Commons.settings: _*).
+  settings(
+    libraryDependencies ++= utilDependencies
+  )
 
+lazy val gnosis = (project in file("gnosis")).
+  settings(Commons.settings: _*).
+  settings(
+    libraryDependencies ++= gnosisDependencies
+  ).dependsOn(util)
 
+lazy val noah = (project in file("noah")).
+  settings(Commons.settings: _*).
+  settings(
+    libraryDependencies ++= noahDependencies
+  ).dependsOn(gnosis, util)
 
 
 
