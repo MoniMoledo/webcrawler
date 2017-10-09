@@ -1,0 +1,15 @@
+use dataverse webhose;
+drop feed PostFeed if exists;
+create feed PostFeed using socket_adapter
+(
+    ("sockets"="blue:10010"),
+    ("address-type"="nc"),
+    ("type-name"="typePost"),
+    ("format"="adm")
+);
+
+set wait-for-completion-feed "false";
+
+connect feed PostFeed to dataset ds_webhose_streaming;
+
+start feed PostFeed;
