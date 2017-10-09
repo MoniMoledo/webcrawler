@@ -11,6 +11,12 @@ import java.util.Date;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+/*
+ * This file contains code that was borrowed from https://github.com/ISG-ICS/cloudberry.
+ *
+ * Copyright: mixed. See noah/LICENSE for copyright and licensing information.
+ */
+
 public class CmdLineAux {
 
     public static Config parseCmdLine(String[] args) {

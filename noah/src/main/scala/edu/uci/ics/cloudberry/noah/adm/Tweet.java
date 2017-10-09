@@ -1,12 +1,15 @@
 package edu.uci.ics.cloudberry.noah.adm;
 
 import edu.uci.ics.cloudberry.gnosis.BrGeoGnosis;
-import edu.uci.ics.cloudberry.gnosis.USGeoGnosis;
 import twitter4j.GeoLocation;
 import twitter4j.Status;
-import java.io.UnsupportedEncodingException;
 
-import static com.fasterxml.jackson.core.JsonEncoding.UTF8;
+
+/*
+ * This file contains code that was borrowed from https://github.com/ISG-ICS/cloudberry.
+ *
+ * Copyright: mixed. See noah/LICENSE for copyright and licensing information.
+ */
 
 public class Tweet {
     public static String CREATE_AT = "create_at";

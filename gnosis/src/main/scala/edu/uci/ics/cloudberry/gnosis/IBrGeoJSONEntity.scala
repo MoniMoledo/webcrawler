@@ -1,9 +1,15 @@
 package edu.uci.ics.cloudberry.gnosis
 
-import java.nio.charset.Charset
-
 import com.vividsolutions.jts.geom.Geometry
 import play.api.libs.json.{JsObject, Json}
+
+/**
+  * Created by Monique on 10/11/2016.
+  *
+  * This file contains code that is based on https://github.com/ISG-ICS/cloudberry.
+  *
+  * Copyright: mixed. See gnosis/LICENSE for copyright and licensing information.
+  **/
 
 sealed trait IBrGeoJSONEntity extends IGeoJSONEntity {
 

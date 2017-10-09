@@ -9,6 +9,13 @@ import twitter4j.TwitterObjectFactory
 
 import scala.collection.mutable
 
+/*
+ * This file contains code that is based on https://github.com/ISG-ICS/cloudberry.
+ *
+ * Copyright: mixed. See noah/LICENSE for copyright and licensing information.
+ */
+
+
 object TwitterJSONTagBrToADM {
   // TODO reserve all the fields and just replace the date and geo location to different part.
   // and only change it to the accept asterix json format, then we can use the feed in Asterix to transfer the format

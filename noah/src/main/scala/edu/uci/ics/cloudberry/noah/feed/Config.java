@@ -11,6 +11,12 @@ import org.kohsuke.args4j.spi.Setter;
 
 import java.util.ArrayList;
 
+/*
+ * This file contains code that was borrowed from https://github.com/ISG-ICS/cloudberry.
+ *
+ * Copyright: mixed. See noah/LICENSE for copyright and licensing information.
+ */
+
 public class Config {
     @Option(name = "-ck", aliases = "--consumer-key", usage = "ConsumerKey for Twitter OAuth")
     private String consumerKey = null;

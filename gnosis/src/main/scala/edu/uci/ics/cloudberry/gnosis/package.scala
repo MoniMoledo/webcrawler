@@ -3,6 +3,14 @@ package edu.uci.ics.cloudberry
 import java.io.File
 import java.nio.charset.{Charset, CodingErrorAction}
 
+/**
+  * Created by Monique on 10/11/2016.
+  *
+  * This file contains code that is based on https://github.com/ISG-ICS/cloudberry.
+  *
+  * Copyright: mixed. See gnosis/LICENSE for copyright and licensing information.
+  **/
+
 package object gnosis {
 
   class UnknownEntityException(entity: IEntity) extends RuntimeException("unknown entity:" + entity)

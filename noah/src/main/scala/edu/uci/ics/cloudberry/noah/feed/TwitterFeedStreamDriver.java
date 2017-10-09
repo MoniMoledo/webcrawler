@@ -20,6 +20,12 @@ import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/*
+ * This file contains code that is based on https://github.com/ISG-ICS/cloudberry.
+ *
+ * Copyright: mixed. See noah/LICENSE for copyright and licensing information.
+ */
+
 public class TwitterFeedStreamDriver {
 
     Client twitterClient;

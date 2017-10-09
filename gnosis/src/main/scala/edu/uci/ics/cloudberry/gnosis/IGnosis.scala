@@ -2,8 +2,14 @@ package edu.uci.ics.cloudberry.gnosis
 
 import java.io.File
 
-import com.vividsolutions.jts.geom.{Coordinate, Envelope}
+import com.vividsolutions.jts.geom.Envelope
 import edu.uci.ics.cloudberry.util.Rectangle
+
+/**
+  * This file contains code that is borrowed from https://github.com/ISG-ICS/cloudberry.
+  *
+  * Copyright: mixed. See gnosis/LICENSE for copyright and licensing information.
+  **/
 
 trait IGnosis {
   def levelShapeMap: Map[TypeLevel, IGeoIndex]

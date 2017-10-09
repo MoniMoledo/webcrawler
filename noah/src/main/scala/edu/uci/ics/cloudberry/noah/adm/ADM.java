@@ -11,6 +11,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 
+/*
+ * This file contains code that was borrowed from https://github.com/ISG-ICS/cloudberry.
+ *
+ * Copyright: mixed. See noah/LICENSE for copyright and licensing information.
+ */
+
 public class ADM {
 
     public static final SimpleDateFormat ADMDateFormat = new SimpleDateFormat("yyyy-MM-dd");

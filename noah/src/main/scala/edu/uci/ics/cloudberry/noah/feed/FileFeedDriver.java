@@ -7,6 +7,12 @@ import org.kohsuke.args4j.Option;
 
 import java.io.*;
 
+/*
+ * This file contains code that was borrowed from https://github.com/ISG-ICS/cloudberry.
+ *
+ * Copyright: mixed. See noah/LICENSE for copyright and licensing information.
+ */
+
 public class FileFeedDriver {
 
     @Option(required = true,

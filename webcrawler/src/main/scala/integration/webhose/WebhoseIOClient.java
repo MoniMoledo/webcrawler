@@ -14,6 +14,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.apache.http.client.utils.URIBuilder;
 
+/**
+ * This file contains code that is borrowed from https://github.com/Webhose/webhoseio-java-sdk.
+ *
+ * Copyright: mixed. See https://github.com/Webhose/webhoseio-java-sdk/blob/master/License.txt
+ * for copyright and licensing information.
+ **/
+
 
 public class WebhoseIOClient {
 
