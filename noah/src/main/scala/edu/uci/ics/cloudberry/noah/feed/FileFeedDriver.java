@@ -1,5 +1,6 @@
 package edu.uci.ics.cloudberry.noah.feed;
 
+import edu.uci.ics.cloudberry.asterix.FeedSocketAdapterClient;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;

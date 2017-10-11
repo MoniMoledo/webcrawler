@@ -2,6 +2,7 @@ package util;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -20,6 +21,7 @@ public class FileLogger {
             // This block configure the logger with handler and formatter
             fh = new FileHandler("WebCrawler.log");
             logger.addHandler(fh);
+            logger.setLevel(Level.INFO);
             SimpleFormatter formatter = new SimpleFormatter();
             fh.setFormatter(formatter);
 

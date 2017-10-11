@@ -5,12 +5,6 @@ import org.kohsuke.args4j.CmdLineParser;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
 /*
  * This file contains code that was borrowed from https://github.com/ISG-ICS/cloudberry.
  *
@@ -27,28 +21,7 @@ public class CmdLineAux {
         } catch (CmdLineException e) {
             System.err.println(e);
             parser.printUsage(System.err);
-        }
-        return config;
-    }
-
-    public static BufferedWriter createWriter(String fileName) throws IOException {
-        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-        Date now = new Date();
-        String strDate = sdfDate.format(now);
-        fileName += strDate + ".gz";
-        GZIPOutputStream zip = new GZIPOutputStream(
-                new FileOutputStream(new File(fileName)));
-        BufferedWriter bw = new BufferedWriter(
-                new OutputStreamWriter(zip, "UTF-8"));
-        return bw;
-    }
-
-    public static BufferedReader createGZipReader(String fileName) throws IOException {
-        GZIPInputStream input = new GZIPInputStream(
-                new FileInputStream(new File(fileName)));
-        BufferedReader br = new BufferedReader(
-                new InputStreamReader(input, "UTF-8"));
-        return br;
+        }return config;
     }
 
     public static ResponseList<User> getUsers(Config config, Twitter twitter) throws CmdLineException {

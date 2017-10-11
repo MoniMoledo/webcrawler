@@ -1,7 +1,6 @@
-package edu.uci.ics.cloudberry.noah.feed;
+package edu.uci.ics.cloudberry.asterix;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 
@@ -60,6 +59,4 @@ public class FeedSocketAdapterClient {
             e.printStackTrace();
         }
     }
-
-
 }

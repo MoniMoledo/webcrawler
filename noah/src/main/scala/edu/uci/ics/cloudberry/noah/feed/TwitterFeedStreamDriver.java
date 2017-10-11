@@ -9,9 +9,10 @@ import com.twitter.hbc.core.endpoint.StatusesFilterEndpoint;
 import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
-//import edu.uci.ics.cloudberry.noah.GeneralProducerKafka;
+import edu.uci.ics.cloudberry.asterix.Asterix;
+import edu.uci.ics.cloudberry.asterix.FeedSocketAdapterClient;
 import edu.uci.ics.cloudberry.noah.adm.UnknownPlaceException;
-import org.apache.kafka.clients.producer.KafkaProducer;
+import edu.uci.ics.cloudberry.util.FileHelper;
 import org.kohsuke.args4j.CmdLineException;
 import twitter4j.TwitterException;
 
@@ -30,27 +31,8 @@ public class TwitterFeedStreamDriver {
 
     Client twitterClient;
     volatile boolean isConnected = false;
-    FeedSocketAdapterClient socketAdapterClient;
 
-    public FeedSocketAdapterClient openSocket(Config config) throws IOException, CmdLineException {
-        if (config.getPort() != 0 && config.getAdapterUrl() != null) {
-            if (!config.isFileOnly()) {
-                String adapterUrl = config.getAdapterUrl();
-                int port = config.getPort();
-                int batchSize = config.getBatchSize();
-                int waitMillSecPerRecord = config.getWaitMillSecPerRecord();
-                int maxCount = config.getMaxCount();
-                socketAdapterClient = new FeedSocketAdapterClient(adapterUrl, port,
-                        batchSize, waitMillSecPerRecord, maxCount);
-                socketAdapterClient.initialize();
-            }
-        } else {
-            throw new CmdLineException("You should provide a port and an URL");
-        }
-        return socketAdapterClient;
-    }
-
-    public void run(Config config, BufferedWriter bw)
+    public void run(Config config, BufferedWriter bw, FeedSocketAdapterClient socketAdapterClient)
             throws InterruptedException, IOException {
         BlockingQueue<String> queue = new LinkedBlockingQueue<String>(10000);
         StatusesFilterEndpoint endpoint = new StatusesFilterEndpoint();
@@ -88,22 +70,15 @@ public class TwitterFeedStreamDriver {
                 .processor(new StringDelimitedProcessor(queue))
                 .build();
 
-
-       // GeneralProducerKafka producer = new GeneralProducerKafka(config);
-        KafkaProducer<String, String> kafkaProducer = null;
         // Establish a connection
         try {
             twitterClient.connect();
             isConnected = true;
-/*            if (config.isStoreKafka()) {
-                kafkaProducer = producer.createKafkaProducer();
-            }*/
+
             // Do whatever needs to be done with messages;
             while (!twitterClient.isDone()) {
                 String msg = queue.take();
-/*                if (config.isStoreKafka()) {
-                    producer.store(config.getTopic(Config.Source.Zika), msg, kafkaProducer);
-                }*/
+
                 //if is not to store in file only, geo tag and send to database
                 if (!config.isFileOnly()) {
                     try {
@@ -124,17 +99,15 @@ public class TwitterFeedStreamDriver {
                 bw.close();
             if (twitterClient != null)
                 twitterClient.stop();
-            if (kafkaProducer != null)
-                kafkaProducer.close();
         }
     }
 
     public static void main(String[] args) throws IOException {
         TwitterFeedStreamDriver feedDriver = new TwitterFeedStreamDriver();
-
+        FeedSocketAdapterClient socketAdapterClient = null;
         try {
             Config config = CmdLineAux.parseCmdLine(args);
-            BufferedWriter bw = CmdLineAux.createWriter("Tweet_");
+            BufferedWriter bw = FileHelper.createWriter("Tweet_");
 
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
@@ -147,15 +120,15 @@ public class TwitterFeedStreamDriver {
             if (config.getTrackTerms().length == 0 && config.getTrackLocation().length == 0) {
                 throw new CmdLineException("Should provide at least one tracking word, or one location boundary");
             }
-            feedDriver.openSocket(config);
-            feedDriver.run(config, bw);
+            socketAdapterClient = Asterix.openSocket(config);
+            feedDriver.run(config, bw, socketAdapterClient);
         } catch (CmdLineException e) {
             e.printStackTrace(System.err);
         } catch (Exception e) {
             e.printStackTrace(System.err);
         } finally {
-            if (feedDriver.socketAdapterClient != null) {
-                feedDriver.socketAdapterClient.finalize();
+            if (socketAdapterClient != null) {
+                socketAdapterClient.finalize();
             }
         }
     }
