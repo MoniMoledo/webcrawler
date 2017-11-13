@@ -4,6 +4,12 @@ package util;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+import java.util.zip.GZIPOutputStream;
+
 /**
  * Created by monique on 04/06/17.
  */
@@ -19,5 +25,12 @@ public class CmdLineAux {
             parser.printUsage(System.err);
         }
         return config;
+    }
+
+    public static long calculateTimestamp(int numberOfDays) {
+        long millisecondsAgo = TimeUnit.DAYS.toMillis(numberOfDays);
+        long currentMilliseconds = System.currentTimeMillis();
+
+        return currentMilliseconds - millisecondsAgo;
     }
 }

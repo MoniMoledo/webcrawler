@@ -1,7 +1,6 @@
 package edu.uci.ics.cloudberry.noah.feed;
 
-//import edu.uci.ics.cloudberry.noah.GeneralProducerKafka;
-import org.apache.kafka.clients.producer.KafkaProducer;
+import edu.uci.ics.cloudberry.util.FileHelper;
 import org.kohsuke.args4j.CmdLineException;
 import twitter4j.*;
 
@@ -15,12 +14,10 @@ public class TwitterHistoricalUsersTimelineDriver {
 
         //Get historical user data
         try {
-            //GeneralProducerKafka producer = new GeneralProducerKafka(config);
-            //KafkaProducer<String, String> kafkaProducer = producer.createKafkaProducer();
             Twitter twitter = CmdLineAux.getTwitterInstance(config);
             ResponseList<User> users = CmdLineAux.getUsers(config, twitter);
             for (User user : users) {
-                BufferedWriter bw = CmdLineAux.createWriter("Tweet_User_"+user.getName() + "_");
+                BufferedWriter bw = FileHelper.createWriter("Tweet_User_"+user.getName() + "_");
                 try {
                     if (user.getStatus() != null) {
                         //Paging in order to get all the tweets in the user timeline. Default is only the last 20.
@@ -32,10 +29,6 @@ public class TwitterHistoricalUsersTimelineDriver {
                             for (Status status : statuses) {
                                 String statusJson = TwitterObjectFactory.getRawJSON(status);
                                 bw.write(statusJson);
-              /*                  if (config.isStoreKafka()) {
-                                    producer.store(config.getTopic(Config.Source.HistUser), statusJson, kafkaProducer);
-                                }
-*/
                             }
                         }
                     }

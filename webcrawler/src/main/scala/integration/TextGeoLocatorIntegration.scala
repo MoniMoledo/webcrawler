@@ -31,19 +31,25 @@ class TextGeoLocatorIntegration {
     val stringRequest  = requestJson.toString
     post.setEntity(new StringEntity(stringRequest, "UTF-8"))
 
-    val response = httpClient.execute(post)
+    try {
 
-    val statusCode = response.getStatusLine.getStatusCode
+        val response = httpClient.execute(post)
 
-    val entity = response.getEntity
+        val statusCode = response.getStatusLine.getStatusCode
 
-    val responseString = EntityUtils.toString(entity, "UTF-8")
+        val entity = response.getEntity
 
-    if(statusCode != 200){
-      logger.log(Level.SEVERE, responseString)
-      return null
+        val responseString = EntityUtils.toString(entity, "UTF-8")
+
+        if (statusCode != 200) {
+          logger.log(Level.SEVERE, responseString)
+          return null
+        }
+        return responseString
+
+    }catch {
+      case ex: Exception => logger.log(Level.SEVERE, ex.getMessage);
+        return null;
     }
-
-    return responseString
   }
 }

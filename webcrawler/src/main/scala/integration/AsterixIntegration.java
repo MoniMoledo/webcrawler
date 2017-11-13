@@ -1,6 +1,5 @@
 package integration;
 
-import asterix.FeedSocketAdapterClient;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import util.Config;
@@ -11,26 +10,6 @@ import java.util.UUID;
  * Created by monique on 24/09/17.
  */
 public class AsterixIntegration {
-
-    public static FeedSocketAdapterClient openSocket(Config config) throws Exception {
-        FeedSocketAdapterClient socketAdapterClient = null;
-        if (config.getPort() != 0 && config.getAdapterUrl() != null) {
-            if (!config.isFileOnly()) {
-                String adapterUrl = config.getAdapterUrl();
-                int port = config.getPort();
-                int batchSize = config.getBatchSize();
-                int waitMillSecPerRecord = config.getWaitMillSecPerRecord();
-                int maxCount = config.getMaxCount();
-
-                socketAdapterClient = new FeedSocketAdapterClient(adapterUrl, port,
-                        batchSize, waitMillSecPerRecord, maxCount);
-                socketAdapterClient.initialize();
-            }
-        } else {
-            throw new Exception("You should provide a port and an URL");
-        }
-        return socketAdapterClient;
-    }
 
     public static String insertDashUUID(String uuid) {
         StringBuffer sb = new StringBuffer(uuid);

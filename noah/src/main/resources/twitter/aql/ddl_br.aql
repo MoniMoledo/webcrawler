@@ -49,7 +49,7 @@ create type typeTweet if not exists as open{
     user_mentions : {{ int64 }} ? ,
     user : typeUser,
     place : typePlace?,
-    geo_tag: typeGeoTag?
+    geo_tag: typeGeoTag
 }
 
 //create dataset ds_users_tweet(typeTweet) if not exists primary key id with filter on create_at;
