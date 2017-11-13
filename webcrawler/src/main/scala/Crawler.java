@@ -53,11 +53,12 @@ public class Crawler {
                             JsonElement jsonGeoTag = null;
                             if (geoTagValue != null) {
                                 jsonGeoTag = new JsonParser().parse(geoTagValue);
+
+                                post.getAsJsonObject().add("geo_tag", jsonGeoTag);
+                                String adm = AsterixIntegration.convertToADM(post);
+                                feedSocket.ingest(adm);
+                                bw.write(post.toString());
                             }
-                            post.getAsJsonObject().add("geo_tag", jsonGeoTag);
-                            String adm = AsterixIntegration.convertToADM(post);
-                            feedSocket.ingest(adm);
-                            bw.write(post.toString());
                         }
                         if (moreResultsAvailable > 0)
                             result = webhose.queryNext();
