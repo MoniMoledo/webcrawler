@@ -27,48 +27,46 @@ public class Crawler {
 
         WebhoseIntegration webhose = new WebhoseIntegration(config.getApiKey());
 
-        try (BufferedWriter bw = FileHelper.createWriter("webhose")) {
+        long timestamp = CmdLineAux.calculateTimestamp(config.getDays());
 
-            long timestamp = CmdLineAux.calculateTimestamp(config.getDays());
+        int requestsLeft = 1000;
 
-            int requestsLeft = 1000;
+        while (requestsLeft > 0) {
+            try (BufferedWriter bw = FileHelper.createWriter("webhose")) {
+                // Fetch query result
+                JsonElement result = webhose.query(timestamp, config.getKeywords(), config.getCountry(), false);
+                int moreResultsAvailable;
 
-            while (requestsLeft > 0) {
-                try {
-                    // Fetch query result
-                    JsonElement result = webhose.query(timestamp, config.getKeywords(), config.getCountry(), false);
-                    int moreResultsAvailable;
+                requestsLeft = result.getAsJsonObject().get("requestsLeft").getAsInt();
+                int totalResults = result.getAsJsonObject().get("totalResults").getAsInt();
 
-                    requestsLeft = result.getAsJsonObject().get("requestsLeft").getAsInt();
-                    int totalResults = result.getAsJsonObject().get("totalResults").getAsInt();
+                logger.info("Requests left: " + requestsLeft + " Total results: " + totalResults);
 
-                    logger.info("Requests left: " + requestsLeft + " Total results: " + totalResults);
+                do {
+                    moreResultsAvailable = result.getAsJsonObject().get("moreResultsAvailable").getAsInt();
+                    JsonArray results = result.getAsJsonObject().get("posts").getAsJsonArray();
+                    for (JsonElement post : results) {
 
-                    do {
-                        moreResultsAvailable = result.getAsJsonObject().get("moreResultsAvailable").getAsInt();
-                        JsonArray results = result.getAsJsonObject().get("posts").getAsJsonArray();
-                        for (JsonElement post : results) {
+                        String geoTagValue = geoLocator.geoTag(config.getTextGeoLocatorUrl(), post.getAsJsonObject().get("text").getAsString());
+                        JsonElement jsonGeoTag = null;
+                        if (geoTagValue != null) {
+                            jsonGeoTag = new JsonParser().parse(geoTagValue);
 
-                            String geoTagValue = geoLocator.geoTag(config.getTextGeoLocatorUrl(), post.getAsJsonObject().get("text").getAsString());
-                            JsonElement jsonGeoTag = null;
-                            if (geoTagValue != null) {
-                                jsonGeoTag = new JsonParser().parse(geoTagValue);
-
-                                post.getAsJsonObject().add("geo_tag", jsonGeoTag);
-                                String adm = AsterixIntegration.convertToADM(post);
-                                feedSocket.ingest(adm);
-                                bw.write(post.toString());
-                            }
+                            post.getAsJsonObject().add("geo_tag", jsonGeoTag);
+                            String adm = AsterixIntegration.convertToADM(post);
+                            feedSocket.ingest(adm);
+                            bw.write(adm);
+                            bw.write(",");
                         }
-                        if (moreResultsAvailable > 0)
-                            result = webhose.queryNext();
-                    } while (moreResultsAvailable > 0);
-                } catch (Exception ex) {
-                    logger.log(Level.SEVERE, ex.getMessage());
-                    throw ex;
-                }
-                Thread.sleep(86400000);
+                    }
+                    if (moreResultsAvailable > 0)
+                        result = webhose.queryNext();
+                } while (moreResultsAvailable > 0);
+            } catch (Exception ex) {
+                logger.log(Level.SEVERE, ex.getMessage());
+                throw ex;
             }
+            Thread.sleep(86400000);
         }
     }
 

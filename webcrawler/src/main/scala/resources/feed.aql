@@ -10,6 +10,6 @@ create feed PostFeed using socket_adapter
 
 set wait-for-completion-feed "false";
 
-connect feed PostFeed to dataset ds_webhose_streaming;
+connect feed PostFeed to dataset ds_news;
 
 start feed PostFeed;
