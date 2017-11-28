@@ -39,15 +39,18 @@ public class AsterixIntegration {
         String published = post.getAsJsonObject().get("published").getAsString();
         String threadPublished = post.getAsJsonObject().get("thread").getAsJsonObject().get("published").getAsString();
         String uuid = post.getAsJsonObject().get("uuid").getAsString();
+        String text = post.getAsJsonObject().get("text").getAsString();
 
         String admCrawled = convertToADMDatetime(crawled);
         String admPublished = convertToADMDatetime(published);
         String admThreadPublished = convertToADMDatetime(threadPublished);
+        String admText = text.replaceAll("\"", "");
         UUID uid = UUID.fromString(insertDashUUID(uuid));
         String admUuid = "uuid(\"" + uid + "\")";
 
         postWithId.addProperty("crawled", admCrawled);
         postWithId.addProperty("published", admPublished);
+        postWithId.addProperty("text", admText);
         JsonObject admThread = post.getAsJsonObject().get("thread").getAsJsonObject();
         admThread.addProperty("published", admThreadPublished);
         admThread.addProperty("uuid", admUuid);
@@ -58,6 +61,7 @@ public class AsterixIntegration {
         String admPost = postString.replaceAll("\\\"datetime\\((.{33})\\)\\\"", "datetime($1)");
         String admPost2 = admPost.replaceAll("\\\"uuid\\((.{40})\\)\\\"", "uuid($1)");
         String adm3 = admPost2.replaceAll("\\\\", "");
-        return adm3;
+        String adm4 = adm3.replaceAll("[@#$%*&^]", "");
+        return adm4;
     }
 }
