@@ -1,5 +1,8 @@
 package edu.uci.ics.cloudberry.noah.feed;
 
+import edu.uci.ics.cloudberry.asterix.Asterix;
+import edu.uci.ics.cloudberry.asterix.FeedSocketAdapterClient;
+import edu.uci.ics.cloudberry.noah.adm.UnknownPlaceException;
 import edu.uci.ics.cloudberry.util.FileHelper;
 import org.kohsuke.args4j.CmdLineException;
 import twitter4j.*;
@@ -10,7 +13,7 @@ import java.util.List;
 
 public class TwitterHistoricalUsersTimelineDriver {
 
-    public void run(Config config) throws IOException, CmdLineException {
+    public void run(Config config,FeedSocketAdapterClient socketAdapterClient) throws IOException, CmdLineException {
 
         //Get historical user data
         try {
@@ -27,9 +30,19 @@ public class TwitterHistoricalUsersTimelineDriver {
                             Paging page = new Paging(pageNum,100);
                             List<Status> statuses = twitter.getUserTimeline(user.getId(), page);
                             for (Status status : statuses) {
-                                String statusJson = TwitterObjectFactory.getRawJSON(status);
-                                bw.write(statusJson);
-                            }
+                                try {
+                                    String statusJson = TwitterObjectFactory.getRawJSON(status);
+                                    String adm = null;
+                                    adm = TagBrTweet.tagOneTweet(statusJson, true);
+
+                                    bw.write(adm);
+                                    socketAdapterClient.ingest(adm);
+                                } catch (UnknownPlaceException e) {
+                                    //e.printStackTrace();
+                                }
+                                catch (TwitterException e) {
+                                e.printStackTrace(System.err);
+                            }}
                         }
                     }
                 } finally {
@@ -45,6 +58,7 @@ public class TwitterHistoricalUsersTimelineDriver {
 
     public static void main(String[] args) throws IOException, CmdLineException {
 
+        FeedSocketAdapterClient socketAdapterClient = null;
         TwitterHistoricalUsersTimelineDriver userDriver = new TwitterHistoricalUsersTimelineDriver();
         Config config = CmdLineAux.parseCmdLine(args);
 
@@ -52,9 +66,17 @@ public class TwitterHistoricalUsersTimelineDriver {
             if (config.getTrackUsers().length == 0) {
                 throw new CmdLineException("Should provide at least one tracking user");
             }
+            socketAdapterClient = Asterix.openSocket(config);
+            userDriver.run(config, socketAdapterClient);
+
         } catch (CmdLineException e) {
-            System.err.println(e);
+            e.printStackTrace(System.err);
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        } finally {
+            if (socketAdapterClient != null) {
+                socketAdapterClient.finalize();
+            }
         }
-        userDriver.run(config);
     }
 }
