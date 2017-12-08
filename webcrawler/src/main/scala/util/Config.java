@@ -24,10 +24,10 @@ public class Config extends AsterixConfig {
     private String[] keywords = new String[]{};
 
     @Option(name = "-co", aliases = "--country-code", usage = "Thread country code")
-    private String country = null;
+    private String country = "BR";
 
     @Option(name = "-ds", aliases = "--days-ago", usage = "Crawl since the given number of days ago")
-    private int days = 0;
+    private int days = 1;
 
     @Option(name = "-st", aliases = "--site", usage = "Search from specific site")
     private String site = null;
