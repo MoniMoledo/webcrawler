@@ -90,6 +90,8 @@ public class TwitterFeedStreamDriver {
                     } catch (TwitterException e) {
                         e.printStackTrace(System.err);
                     }
+                }else{
+                    bw.write(msg);
                 }
             }
         } catch (Exception e) {
@@ -120,7 +122,9 @@ public class TwitterFeedStreamDriver {
             if (config.getTrackTerms().length == 0 && config.getTrackLocation().length == 0) {
                 throw new CmdLineException("Should provide at least one tracking word, or one location boundary");
             }
-            socketAdapterClient = Asterix.openSocket(config);
+            if(!config.isFileOnly()){
+                socketAdapterClient = Asterix.openSocket(config);
+            }
             feedDriver.run(config, bw, socketAdapterClient);
         } catch (CmdLineException e) {
             e.printStackTrace(System.err);
