@@ -23,13 +23,17 @@ public class Crawler {
 
         Config config = CmdLineAux.parseCmdLine(args);
 
-        FeedSocketAdapterClient feedSocket = Asterix.openSocket(config);
+        FeedSocketAdapterClient feedSocket = null;
 
         WebhoseIntegration webhose = new WebhoseIntegration(config.getApiKey());
 
         long timestamp = CmdLineAux.calculateTimestamp(config.getDays());
 
         int requestsLeft = 1000;
+
+        if(!config.isFileOnly()){
+            feedSocket = Asterix.openSocket(config);
+        }
 
         while (requestsLeft > 0) {
             try (BufferedWriter bw = FileHelper.createWriter("webhose")) {
@@ -47,16 +51,21 @@ public class Crawler {
                     JsonArray results = result.getAsJsonObject().get("posts").getAsJsonArray();
                     for (JsonElement post : results) {
 
-                        String geoTagValue = geoLocator.geoTag(config.getTextGeoLocatorUrl(), post.getAsJsonObject().get("text").getAsString());
-                        JsonElement jsonGeoTag = null;
-                        if (geoTagValue != null) {
-                            jsonGeoTag = new JsonParser().parse(geoTagValue);
+                        if(config.isFileOnly()){
+                           bw.write(post.toString());
+                        }else{
+                            String geoTagValue = geoLocator.geoTag(config.getTextGeoLocatorUrl(), post.getAsJsonObject().get("text").getAsString());
+                            JsonElement jsonGeoTag = null;
+                            if (geoTagValue != null) {
+                                jsonGeoTag = new JsonParser().parse(geoTagValue);
 
-                            post.getAsJsonObject().add("geo_tag", jsonGeoTag);
-                            String adm = AsterixIntegration.convertToADM(post);
-                            feedSocket.ingest(adm);
-                            bw.write(adm);
-                            bw.write(",");
+                                post.getAsJsonObject().add("geo_tag", jsonGeoTag);
+                                String adm = AsterixIntegration.convertToADM(post);
+                                feedSocket.ingest(adm);
+                                bw.write(adm);
+                                bw.write(",");
+                            }
+
                         }
                     }
                     if (moreResultsAvailable > 0)
